@@ -244,3 +244,93 @@ pow(7, 11, 13)              # 7**11 % 13 (szybko)
 pow(7, -1, 13)              # odwrotność modularna 7 modulo 13
 n.to_bytes((n.bit_length()+7)//8, 'big')  # int -> bytes
 ```
+
+---
+
+
+## Ściąga - algorytmy kryptograficzne
+
+### 1. Base64
+- **Działanie:** Koduje dane binarne jako tekst, używając 64 znaków. Nie jest szyfrowaniem.
+- **Dekodowanie:** `base64.b64decode(data)`.
+
+### 2. Szyfr Cezara
+- **Działanie:** Przesuwa litery alfabetu o stałą liczbę pozycji.
+- **Deszyfrowanie:** Cofamy przesunięcie: `P = (C - k) mod 26`.
+- **Atak:** Brute force wszystkich 26 przesunięć.
+
+### 3. XOR
+- **Działanie:** Każdy bajt wiadomości jest łączony z bajtem klucza operacją XOR.
+- **Deszyfrowanie:** `P = C XOR K`.
+- **Atak:** Znany fragment tekstu pozwala odzyskać klucz: `K = C XOR P`.
+
+### 4. Vigenère
+- **Działanie:** Każda litera jest przesuwana zgodnie z kolejną literą powtarzanego klucza.
+- **Deszyfrowanie:** `P[i] = (C[i] - K[i]) mod 26`.
+- **Atak:** Analiza częstotliwości, długości klucza lub znanego tekstu jawnego.
+
+### 5. Szyfr podstawieniowy (Substitution)
+- **Działanie:** Każda litera jest zastępowana inną według stałego alfabetu.
+- **Deszyfrowanie:** Odwrócenie mapowania liter.
+- **Atak:** Analiza częstotliwości liter, powtarzających się wzorców i słów.
+
+### 6. Hash
+- **Działanie:** Funkcja skrótu zamienia dane na skrót o określonej długości. Nie jest odwracalnym szyfrowaniem.
+- **Atak:** Zgadywanie danych wejściowych, obliczanie hashy i porównywanie z celem.
+- **Przykład:** `hashlib.md5(data).hexdigest()`.
+
+### 7. AES-CBC
+- **Działanie:** Symetryczny szyfr blokowy AES (blok 128 bitów); CBC łączy każdy blok z poprzednim szyfrogramem, a pierwszy z IV.
+- **Deszyfrowanie:** Potrzebujemy klucza, IV, szyfrogramu i informacji o paddingu.
+- **Ważne:** AES używa kluczy 128/192/256 bitów; IV w CBC ma 16 bajtów.
+
+### 8. S-DES
+- **Działanie:** Uproszczona wersja DES, wykorzystująca permutacje, podstawienia i klucze rundowe.
+- **Deszyfrowanie:** Te same rundy Feistela, ale klucze rundowe w odwrotnej kolejności.
+- **Atak:** Brute force 1024 możliwych kluczy 10-bitowych.
+
+### 9. RSA – metoda Fermata
+- **Działanie:** RSA opiera się na trudności faktoryzacji liczby `n = p * q`.
+- **Atak:** Gdy `p` i `q` są blisko siebie, szukamy `n = a² - b² = (a-b)(a+b)`.
+- **Deszyfrowanie:** `φ(n)=(p-1)(q-1)`, `d=e⁻¹ mod φ(n)`, `m=c^d mod n`.
+
+### 10. CRT – chińskie twierdzenie o resztach
+- **Działanie:** Odtwarza liczbę spełniającą układ kongruencji, np. `x ≡ a (mod m)`.
+- **Rozwiązanie:** Łączymy reszty w jedną liczbę modulo NWW modułów.
+- **Ważne:** Dla modułów parami względnie pierwszych rozwiązanie zawsze istnieje i jest jednoznaczne modulo ich iloczynu.
+
+### 11. ElGamal
+- **Działanie:** Szyfr asymetryczny oparty na problemie logarytmu dyskretnego.
+- **Szyfrowanie:** `a = g^k mod p`, `b = m * y^k mod p`.
+- **Deszyfrowanie:** `m = b * (a^x)⁻¹ mod p`, gdzie `x` jest kluczem prywatnym.
+- **Atak:** Szukanie słabego lub małego klucza w ograniczonym zakresie.
+
+### 12. Podpis RSA
+- **Działanie:** Klucz prywatny służy do podpisywania, a publiczny do weryfikacji.
+- **Uproszczony schemat:** `s = m^d mod n`, weryfikacja: `m = s^e mod n`.
+- **Ważne:** Prawdziwe podpisy RSA używają odpowiedniego hashowania i paddingu, np. RSA-PSS.
+
+---
+
+## Szyfrowanie i szyfrowanie asymetryczne
+
+| Charakterystyka | Możliwy algorytm |
+|---|---|
+| Tekst A-Z, przesunięte litery | Cezar |
+| Powtarzający się klucz, przesunięcia liter | Vigenère |
+| Bajty/hex, operacje bitowe | XOR |
+| Zmienione litery, zachowane wzorce | Substitution |
+| Tekst z `=`, `/`, `+` | Base64 |
+| Ciąg hex o stałej długości | Hash lub zakodowane bajty |
+| Klucz + IV + bloki 16 bajtów | AES-CBC |
+| Klucz 10-bitowy, permutacje, S-boxy | S-DES |
+| `n`, `e`, `p`, `q` | RSA |
+| Wiele reszt i modułów | CRT |
+| `p`, `g`, `y`, pary `(a,b)` | ElGamal |
+| `n`, `d`, podpis wiadomości | Podpis RSA |
+
+
+## Przydatne strony:
+- https://gchq.github.io/CyberChef/
+- https://www.dcode.fr/cipher-identifier 
+- https://quipqiup.com/
